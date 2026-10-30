@@ -1,4 +1,4 @@
-from .optimiser import plan_transfers
+from .optimiser import plan_actions
 
 
 def no_redistribution(sim):
@@ -45,10 +45,14 @@ def estimate(sim, horizon: int | None = None):
     return surplus, need
 
 
-def solver_only(sim):
+def make_solver_policy(priority: str = "balanced",
+                       discount: bool = True, donation: bool = True):
     """
-    المحسِّن وحده، دون وكيل ذكاء اصطناعي.
-    The optimiser on its own, with no AI agent.
+    ينشئ سياسة تعتمد على المحسِّن وحده بأولوية محددة.
+    Builds an optimiser-only policy with a given priority.
     """
-    surplus, need = estimate(sim)
-    return plan_transfers(sim.sc, surplus, need)
+    def policy(sim):
+        surplus, need = estimate(sim)
+        return plan_actions(sim.sc, surplus, need, priority,
+                            allow_discount=discount, allow_donation=donation)
+    return policy

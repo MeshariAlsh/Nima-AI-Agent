@@ -1,21 +1,37 @@
 import pulp
 
-from .models import Scenario, Transfer, distance_km
+from .models import Discount, Donation, Plan, Scenario, Transfer, distance_km
+
+# الأولويات: كم ريالًا يساوي تجنّب هدر وحدة واحدة، ومنع نفاد وحدة واحدة
+# priorities: how many SAR avoiding one wasted unit, and preventing one stockout, are worth
+PRIORITIES = {
+    # استرداد القيمة المالية فقط
+    # recover financial value only
+    "value":    {"waste": 0.0,  "availability": 0.0},
+    # موازنة بين القيمة والهدر والتوفر
+    # balance value, waste and availability
+    "balanced": {"waste": 3.0,  "availability": 3.0},
+    # تقليل الهدر أولًا
+    # reduce waste first
+    "waste":    {"waste": 15.0, "availability": 1.0},
+}
 
 
-def plan_transfers(scenario: Scenario, surplus: dict, need: dict,
-                   trip_cost: float = 20.0) -> list[Transfer]:
+def plan_actions(scenario: Scenario, surplus: dict, need: dict,
+                 priority: str = "balanced",
+                 allow_discount: bool = True,
+                 allow_donation: bool = True) -> Plan:
     """
-    يخطط لعمليات النقل الأعلى قيمة بين المتاجر باستخدام البرمجة الخطية بالأعداد الصحيحة.
-    Plans the most valuable transfers between stores using integer linear programming.
-
-    surplus[(store, product)]: وحدات ستنتهي صلاحيتها دون بيع
-    surplus[(store, product)]: units that will expire unsold
-    need[(store, product)]: العجز المتوقع
-    need[(store, product)]: expected shortfall
+    يختار لكل فائض أفضل توزيع بين النقل والتخفيض والتبرع، وفق أولويات صاحب القرار.
+    For every surplus, chooses the best split between transfer, discount and donation,
+    according to the decision-maker's priorities.
     """
+    w = PRIORITIES[priority]
     stores = [s.name for s in scenario.stores]
+    products = [p.name for p in scenario.products]
     value = {p.name: p.unit_value for p in scenario.products}
+    q = scenario.discount_sell_prob
+    keep = 1 - scenario.discount_pct
     routes = [(i, j) for i in stores for j in stores if i != j]
 
     # تكلفة نقل الوحدة الواحدة على كل مسار بالريال
@@ -23,42 +39,71 @@ def plan_transfers(scenario: Scenario, surplus: dict, need: dict,
     unit_cost = {(i, j): distance_km(scenario.store(i), scenario.store(j))
                  * scenario.transport_cost_per_unit_km for (i, j) in routes}
 
-    # متغيرات القرار: عدد الوحدات المنقولة لكل مسار ومنتج،
-    # فقط حيث يوجد فائض عند المصدر وعجز عند الوجهة
-    # decision variables: units moved per route and product,
-    # only where the source has surplus and the destination has need
+    has_surplus = [(i, p) for i in stores for p in products
+                   if surplus.get((i, p), 0) > 0]
+    if not has_surplus:
+        return Plan()
+
+    # متغيرات القرار: النقل (x)، والتخفيض (c)، والتبرع (g)
+    # decision variables: transfer (x), discount (c), donation (g)
     x = {(i, j, p): pulp.LpVariable(f"x_{i}_{j}_{p}", 0, None, pulp.LpInteger)
-         for (i, j) in routes for p in value
+         for (i, j) in routes for p in products
          if surplus.get((i, p), 0) > 0 and need.get((j, p), 0) > 0}
-    if not x:
-        return []
+    c = ({(i, p): pulp.LpVariable(f"c_{i}_{p}", 0, None, pulp.LpInteger)
+          for (i, p) in has_surplus} if allow_discount else {})
+    g = ({(i, r.name, p): pulp.LpVariable(f"g_{i}_{k}_{p}", 0, None, pulp.LpInteger)
+          for (i, p) in has_surplus for k, r in enumerate(scenario.recipients)}
+         if allow_donation else {})
+    if not (x or c or g):
+        return Plan()
 
-    # متغير ثنائي لكل مسار: هل تخرج شاحنة على هذا المسار الليلة؟
-    # one binary variable per route: does a truck run on this route tonight?
-    used_routes = {(i, j) for (i, j, _) in x}
-    y = {r: pulp.LpVariable(f"y_{r[0]}_{r[1]}", 0, 1, pulp.LpBinary) for r in used_routes}
+    # متغير ثنائي لكل مسار: هل تخرج شاحنة عليه الليلة؟
+    # one binary variable per route: does a truck run on it tonight?
+    y = {r: pulp.LpVariable(f"y_{r[0]}_{r[1]}", 0, 1, pulp.LpBinary)
+         for r in {(i, j) for (i, j, _) in x}}
 
-    prob = pulp.LpProblem("nima_transfers", pulp.LpMaximize)
+    prob = pulp.LpProblem("nima_actions", pulp.LpMaximize)
 
-    # الهدف: قيمة الطعام المُنقَذ ناقص تكلفة نقل الوحدات ناقص تكلفة الرحلات
-    # objective: value of food saved minus per-unit transport minus truck trips
-    prob += (pulp.lpSum((value[p] - unit_cost[(i, j)]) * v
-                        for (i, j, p), v in x.items())
-             - pulp.lpSum(trip_cost * y[r] for r in y))
+    # الهدف بالريال:
+    # النقل: قيمة البيع بالسعر الكامل + قيمة تجنّب الهدر + قيمة منع النفاد − تكلفة النقل
+    # التخفيض: الإيراد المتوقع بعد الخصم + قيمة الهدر المتجنَّب المتوقع
+    # التبرع: قيمة تجنّب الهدر
+    # objective, in SAR:
+    # transfer: full-price sale + waste avoided + stockout prevented − transport
+    # discount: expected discounted revenue + expected waste avoided
+    # donation: waste avoided
+    prob += (
+        pulp.lpSum((value[p] - unit_cost[(i, j)] + w["waste"] + w["availability"]) * v
+                   for (i, j, p), v in x.items())
+        - pulp.lpSum(scenario.trip_cost * v for v in y.values())
+        + pulp.lpSum((q * keep * value[p] + q * w["waste"]) * v
+                     for (i, p), v in c.items())
+        + pulp.lpSum(w["waste"] * v for v in g.values())
+    )
 
-    # قيد: لا يرسل المتجر أكثر من فائضه
-    # constraint: a store can't send more than its surplus
-    for (i, p), qty in surplus.items():
-        out = [v for (a, _, q), v in x.items() if a == i and q == p]
-        if out:
-            prob += pulp.lpSum(out) <= qty
+    # قيد: مجموع ما يُنقل ويُخفَّض ويُتبرَّع به لا يتجاوز الفائض
+    # constraint: transferred + discounted + donated can't exceed the surplus
+    for (i, p) in has_surplus:
+        parts = [v for (a, _, b), v in x.items() if a == i and b == p]
+        if (i, p) in c:
+            parts.append(c[(i, p)])
+        parts += [v for (a, _, b), v in g.items() if a == i and b == p]
+        if parts:
+            prob += pulp.lpSum(parts) <= surplus[(i, p)]
 
     # قيد: لا يستقبل المتجر أكثر من حاجته
     # constraint: a store can't receive more than it needs
     for (j, p), qty in need.items():
-        inc = [v for (_, b, q), v in x.items() if b == j and q == p]
+        inc = [v for (_, b, r), v in x.items() if b == j and r == p]
         if inc:
             prob += pulp.lpSum(inc) <= qty
+
+    # قيد: لا تتجاوز التبرعات السعة اليومية لكل جهة مستفيدة
+    # constraint: donations can't exceed each recipient's daily capacity
+    for r in scenario.recipients:
+        parts = [v for (_, name, _), v in g.items() if name == r.name]
+        if parts:
+            prob += pulp.lpSum(parts) <= r.daily_capacity
 
     # قيد: لا يُنقل شيء على مسار إلا إذا خرجت شاحنة عليه
     # constraint: nothing moves on a route unless a truck runs on it
@@ -68,6 +113,11 @@ def plan_transfers(scenario: Scenario, surplus: dict, need: dict,
 
     prob.solve(pulp.PULP_CBC_CMD(msg=False))
 
-    return [Transfer(i, j, p, int(round(v.value())))
-            for (i, j, p), v in x.items()
-            if v.value() is not None and v.value() > 0.5]
+    def units(v):
+        return int(round(v.value() or 0))
+
+    return Plan(
+        transfers=[Transfer(i, j, p, units(v)) for (i, j, p), v in x.items() if units(v) > 0],
+        discounts=[Discount(i, p, units(v)) for (i, p), v in c.items() if units(v) > 0],
+        donations=[Donation(i, p, units(v), r) for (i, r, p), v in g.items() if units(v) > 0],
+    )

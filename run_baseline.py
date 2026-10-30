@@ -3,7 +3,7 @@ from sim.simulator import simulate
 from sim.policies import no_redistribution
 
 sc = load_scenario()
-log, moves = simulate(sc, no_redistribution, days=30, seed=0)
+log, actions, _ = simulate(sc, no_redistribution, days=30, seed=0)
 
 cols = ["demand", "sold", "stockout", "wasted"]
 print(log.groupby("store")[cols].sum(), "\n")
