@@ -1,0 +1,26 @@
+{
+  "warehouse": {"name": "Warehouse", "lat": 24.565, "lon": 46.850},
+  "stores": [
+    {"name": "Olaya",  "lat": 24.690, "lon": 46.685},
+    {"name": "Malqa",  "lat": 24.810, "lon": 46.610},
+    {"name": "Yasmin", "lat": 24.830, "lon": 46.640},
+    {"name": "Rawdah", "lat": 24.740, "lon": 46.770},
+    {"name": "Naseem", "lat": 24.730, "lon": 46.820},
+    {"name": "Shifa",  "lat": 24.550, "lon": 46.710}
+  ],
+  "products": [
+  {"name": "bread",    "shelf_life": 2, "unit_value": 2.0},
+  {"name": "chicken",  "shelf_life": 3, "unit_value": 18.0},
+  {"name": "milk",     "shelf_life": 4, "unit_value": 6.0},
+  {"name": "lettuce",  "shelf_life": 4, "unit_value": 4.0},
+  {"name": "laban",    "shelf_life": 5, "unit_value": 4.0},
+  {"name": "tomatoes", "shelf_life": 6, "unit_value": 5.0},
+  {"name": "yogurt",   "shelf_life": 7, "unit_value": 3.0}
+  ],
+  "base_demand": {"bread": 40, "chicken": 15, "milk": 30, "lettuce": 20,
+                "laban": 30, "tomatoes": 25, "yogurt": 25},
+  "store_multiplier": {"Olaya": 1.5, "Malqa": 1.2, "Yasmin": 1.1,
+                       "Rawdah": 0.9, "Naseem": 0.7, "Shifa": 0.6},
+  "delivery_every": 2,
+  "transport_cost_per_unit_km": 0.02
+}

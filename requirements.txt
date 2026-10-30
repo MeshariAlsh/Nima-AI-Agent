@@ -25,7 +25,7 @@ pandas==3.1.0
 pillow==13.0.0
 plotly==7.1.0
 protobuf==7.36.2
-PuLP==4.2.0
+PuLP==3.3.2
 pyarrow==26.0.0
 pydantic==2.14.2
 pydantic_core==2.50.2
