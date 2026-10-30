@@ -19,6 +19,8 @@ PRIORITIES = {
 
 def plan_actions(scenario: Scenario, surplus: dict, need: dict,
                  priority: str = "balanced",
+                 urgent: dict | None = None,
+                 allow_transfer: bool = True,
                  allow_discount: bool = True,
                  allow_donation: bool = True) -> Plan:
     """
@@ -39,20 +41,26 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
     unit_cost = {(i, j): distance_km(scenario.store(i), scenario.store(j))
                  * scenario.transport_cost_per_unit_km for (i, j) in routes}
 
+    # الفائض العاجل (ما ينتهي غدًا) هو وحده المؤهل للتخفيض أو التبرع
+    # urgent surplus (expiring tomorrow) is the only surplus eligible for discount or donation
+    if urgent is None:
+        urgent = surplus
     has_surplus = [(i, p) for i in stores for p in products
                    if surplus.get((i, p), 0) > 0]
     if not has_surplus:
         return Plan()
+    has_urgent = [(i, p) for (i, p) in has_surplus if urgent.get((i, p), 0) > 0]
 
     # متغيرات القرار: النقل (x)، والتخفيض (c)، والتبرع (g)
     # decision variables: transfer (x), discount (c), donation (g)
-    x = {(i, j, p): pulp.LpVariable(f"x_{i}_{j}_{p}", 0, None, pulp.LpInteger)
-         for (i, j) in routes for p in products
-         if surplus.get((i, p), 0) > 0 and need.get((j, p), 0) > 0}
-    c = ({(i, p): pulp.LpVariable(f"c_{i}_{p}", 0, None, pulp.LpInteger)
-          for (i, p) in has_surplus} if allow_discount else {})
-    g = ({(i, r.name, p): pulp.LpVariable(f"g_{i}_{k}_{p}", 0, None, pulp.LpInteger)
-          for (i, p) in has_surplus for k, r in enumerate(scenario.recipients)}
+    x = ({(i, j, p): pulp.LpVariable(f"x_{i}_{j}_{p}", 0, None, pulp.LpContinuous)
+          for (i, j) in routes for p in products
+          if surplus.get((i, p), 0) > 0 and need.get((j, p), 0) > 0}
+         if allow_transfer else {})
+    c = ({(i, p): pulp.LpVariable(f"c_{i}_{p}", 0, None, pulp.LpContinuous)
+          for (i, p) in has_urgent} if allow_discount else {})
+    g = ({(i, r.name, p): pulp.LpVariable(f"g_{i}_{k}_{p}", 0, None, pulp.LpContinuous)
+          for (i, p) in has_urgent for k, r in enumerate(scenario.recipients)}
          if allow_donation else {})
     if not (x or c or g):
         return Plan()
@@ -91,6 +99,14 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
         if parts:
             prob += pulp.lpSum(parts) <= surplus[(i, p)]
 
+    # قيد: التخفيض والتبرع معًا لا يتجاوزان الفائض العاجل
+    # constraint: discount plus donation can't exceed the urgent surplus
+    for (i, p) in has_urgent:
+        parts = ([c[(i, p)]] if (i, p) in c else []) + \
+                [v for (a, _, b), v in g.items() if a == i and b == p]
+        if parts:
+            prob += pulp.lpSum(parts) <= urgent[(i, p)]
+
     # قيد: لا يستقبل المتجر أكثر من حاجته
     # constraint: a store can't receive more than it needs
     for (j, p), qty in need.items():
@@ -111,10 +127,14 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
     for r in y:
         prob += pulp.lpSum(v for (i, j, _), v in x.items() if (i, j) == r) <= big_m * y[r]
 
-    prob.solve(pulp.PULP_CBC_CMD(msg=False))
+    # حد زمني لكل مسألة، وقبول حل ضمن 1% من الأمثل
+    # time limit per problem, and accept a solution within 1% of optimal
+    prob.solve(pulp.PULP_CBC_CMD(msg=False, timeLimit=5, gapRel=0.01))
 
     def units(v):
-        return int(round(v.value() or 0))
+        # التقريب إلى الأسفل يضمن عدم تجاوز الفائض أو الحاجة
+        # rounding down guarantees we never exceed the surplus or the need
+        return int(v.value() or 0)
 
     return Plan(
         transfers=[Transfer(i, j, p, units(v)) for (i, j, p), v in x.items() if units(v) > 0],

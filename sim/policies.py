@@ -11,28 +11,34 @@ def no_redistribution(sim):
 
 def estimate(sim, horizon: int | None = None):
     """
-    يحسب الفائض والعجز المتوقعين لكل متجر ومنتج مساء اليوم الحالي.
-    Computes expected surplus and need for every store and product tonight.
+    يحسب الفائض والفائض العاجل والعجز المتوقع لكل متجر ومنتج مساء اليوم الحالي.
+    Computes surplus, urgent surplus and expected need for every store and product tonight.
     """
     sc = sim.sc
     d = sim.day
     h = horizon or sc.delivery_every
-    surplus, need = {}, {}
+    surplus, urgent, need = {}, {}, {}
 
     for s in sc.stores:
         for p in sc.products:
             mu = sc.mean_demand(s.name, p.name)
 
-            # الفائض: نمرّ على الدفعات من الأقدم، ونحسب ما يمكن بيعه قبل انتهاء صلاحية كل دفعة
-            # surplus: walk batches oldest first, counting what can sell before each expires
+            # الفائض: نمرّ على الدفعات من الأقدم، ونحسب ما يمكن بيعه قبل انتهاء صلاحية كل دفعة.
+            # الفائض العاجل هو ما ينتهي غدًا، وهو وحده المؤهل للتخفيض أو التبرع
+            # surplus: walk batches oldest first, counting what can sell before each expires.
+            # urgent surplus expires tomorrow, and is the only surplus eligible for discount or donation
             used = 0.0
             waste = 0.0
+            waste_urgent = 0.0
             for b in sim._batches(s.name, p.name):
                 sellable = max(0.0, mu * (b.expiry_day - d) - used)
                 sells = min(b.qty, sellable)
                 waste += b.qty - sells
+                if b.expiry_day <= d + 1:
+                    waste_urgent += b.qty - sells
                 used += sells
             surplus[(s.name, p.name)] = int(waste)
+            urgent[(s.name, p.name)] = int(waste_urgent)
 
             # العجز: الطلب المتوقع خلال الأفق ناقص المخزون القابل للبيع ناقص التوريدات المجدولة
             # need: expected demand over the horizon minus usable stock minus scheduled deliveries
@@ -42,17 +48,18 @@ def estimate(sim, horizon: int | None = None):
                            if t % sc.delivery_every == 0)
             need[(s.name, p.name)] = max(0, int(mu * h - usable - incoming))
 
-    return surplus, need
+    return surplus, urgent, need
 
 
-def make_solver_policy(priority: str = "balanced",
+def make_solver_policy(priority: str = "balanced", transfer: bool = True,
                        discount: bool = True, donation: bool = True):
     """
-    ينشئ سياسة تعتمد على المحسِّن وحده بأولوية محددة.
-    Builds an optimiser-only policy with a given priority.
+    ينشئ سياسة تعتمد على المحسِّن وحده بأولوية محددة وإجراءات مختارة.
+    Builds an optimiser-only policy with a given priority and chosen actions.
     """
     def policy(sim):
-        surplus, need = estimate(sim)
-        return plan_actions(sim.sc, surplus, need, priority,
-                            allow_discount=discount, allow_donation=donation)
+        surplus, urgent, need = estimate(sim)
+        return plan_actions(sim.sc, surplus, need, priority, urgent=urgent,
+                            allow_transfer=transfer, allow_discount=discount,
+                            allow_donation=donation)
     return policy
