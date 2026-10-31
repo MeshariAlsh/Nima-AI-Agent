@@ -1,0 +1,52 @@
+{
+  "baseline": {
+    "wasted": 3067,
+    "stockout": 4292,
+    "donated": 0,
+    "waste_value": 15244.0,
+    "lost_sales_value": 23149.0,
+    "revenue": 142806.0,
+    "transport": 0.0,
+    "net_revenue": 142806.0
+  },
+  "value": {
+    "wasted": 779,
+    "stockout": 2678,
+    "donated": 0,
+    "waste_value": 3522.0,
+    "lost_sales_value": 13849.0,
+    "revenue": 153604.0,
+    "transport": 1477.406763858422,
+    "net_revenue": 152126.59323614158
+  },
+  "balanced": {
+    "wasted": 478,
+    "stockout": 2579,
+    "donated": 672,
+    "waste_value": 2897.0,
+    "lost_sales_value": 13651.0,
+    "revenue": 153160.1,
+    "transport": 1625.995478121881,
+    "net_revenue": 151534.10452187812
+  },
+  "waste": {
+    "wasted": 358,
+    "stockout": 2582,
+    "donated": 1000,
+    "waste_value": 2273.0,
+    "lost_sales_value": 13653.0,
+    "revenue": 152528.8,
+    "transport": 1625.4302878004235,
+    "net_revenue": 150903.36971219958
+  },
+  "agent": {
+    "wasted": 704,
+    "stockout": 2682,
+    "donated": 107,
+    "waste_value": 3347.0,
+    "lost_sales_value": 14191.0,
+    "revenue": 153455.2,
+    "transport": 1508.49145175366,
+    "net_revenue": 151946.70854824636
+  }
+}
