@@ -1,16 +1,16 @@
 day,type,src,dst,product,qty,km,cost
 0,transfer,Naseem,Olaya,bread,23,14.3,26.5981607012534
-0,discount,Rawdah,Rawdah,bread,3,0.0,0.0
-0,discount,Naseem,Naseem,bread,4,0.0,0.0
-0,discount,Shifa,Shifa,bread,33,0.0,0.0
+0,donation,Rawdah,Food Bank North,bread,3,12.0,0.0
+0,donation,Naseem,Food Bank North,bread,4,17.1,0.0
+0,donation,Shifa,Food Bank North,bread,33,26.1,0.0
 1,discount,Shifa,Shifa,chicken,1,0.0,0.0
 2,transfer,Shifa,Olaya,bread,8,15.8,22.523373116072285
 2,transfer,Shifa,Olaya,chicken,3,15.8,0.9462649185271071
 2,transfer,Shifa,Olaya,milk,11,15.8,3.469638034599393
 2,transfer,Shifa,Olaya,lettuce,14,15.8,4.4159029531265
-2,discount,Rawdah,Rawdah,bread,7,0.0,0.0
-2,discount,Naseem,Naseem,bread,24,0.0,0.0
-2,discount,Shifa,Shifa,bread,21,0.0,0.0
+2,donation,Rawdah,Food Bank North,bread,7,12.0,0.0
+2,donation,Naseem,Food Bank North,bread,24,17.1,0.0
+2,donation,Shifa,Food Bank North,bread,21,26.1,0.0
 3,transfer,Naseem,Olaya,chicken,8,14.3,22.29501241782727
 3,transfer,Shifa,Olaya,chicken,5,15.8,21.57710819754518
 3,transfer,Shifa,Olaya,milk,3,15.8,0.9462649185271071
@@ -18,11 +18,11 @@ day,type,src,dst,product,qty,km,cost
 4,transfer,Shifa,Olaya,milk,5,15.8,1.5771081975451784
 4,transfer,Shifa,Olaya,lettuce,10,15.8,3.154216395090357
 4,transfer,Shifa,Olaya,laban,5,15.8,1.5771081975451784
-4,discount,Rawdah,Rawdah,bread,9,0.0,0.0
-4,discount,Naseem,Naseem,bread,18,0.0,0.0
-4,discount,Shifa,Shifa,bread,23,0.0,0.0
 4,discount,Shifa,Shifa,milk,5,0.0,0.0
 4,discount,Shifa,Shifa,lettuce,3,0.0,0.0
+4,donation,Rawdah,Food Bank North,bread,9,12.0,0.0
+4,donation,Naseem,Food Bank North,bread,18,17.1,0.0
+4,donation,Shifa,Food Bank North,bread,23,26.1,0.0
 5,transfer,Naseem,Olaya,chicken,8,14.3,22.29501241782727
 5,transfer,Naseem,Olaya,lettuce,4,14.3,1.1475062089136343
 5,transfer,Naseem,Malqa,chicken,2,23.0,0.9197223088744783
@@ -32,36 +32,38 @@ day,type,src,dst,product,qty,km,cost
 5,transfer,Shifa,Olaya,lettuce,3,15.8,0.9462649185271071
 5,transfer,Shifa,Olaya,laban,6,15.8,1.8925298370542143
 5,discount,Shifa,Shifa,chicken,7,0.0,0.0
-6,transfer,Shifa,Olaya,bread,33,15.8,30.408914103798182
-6,transfer,Shifa,Olaya,chicken,3,15.8,0.9462649185271071
-6,transfer,Shifa,Olaya,lettuce,6,15.8,1.8925298370542143
+6,transfer,Naseem,Olaya,bread,30,14.3,28.606296566852258
+6,transfer,Naseem,Olaya,chicken,3,14.3,0.8606296566852256
+6,transfer,Naseem,Olaya,lettuce,6,14.3,1.7212593133704512
+6,transfer,Naseem,Olaya,tomatoes,2,14.3,0.5737531044568172
+6,transfer,Shifa,Olaya,bread,10,15.8,23.15421639509036
 6,transfer,Shifa,Olaya,laban,10,15.8,3.154216395090357
 6,transfer,Shifa,Olaya,tomatoes,6,15.8,1.8925298370542143
 6,transfer,Shifa,Olaya,yogurt,6,15.8,1.8925298370542143
-6,discount,Rawdah,Rawdah,bread,16,0.0,0.0
-6,discount,Naseem,Naseem,bread,30,0.0,0.0
-6,discount,Shifa,Shifa,milk,3,0.0,0.0
-6,discount,Shifa,Shifa,lettuce,2,0.0,0.0
-7,transfer,Naseem,Olaya,chicken,6,14.3,21.721259313370453
+6,donation,Rawdah,Food Bank North,bread,16,12.0,0.0
+6,donation,Shifa,Food Bank North,bread,23,26.1,0.0
+6,donation,Shifa,Food Bank North,milk,3,26.1,0.0
+6,donation,Shifa,Food Bank North,lettuce,2,26.1,0.0
+7,transfer,Naseem,Olaya,chicken,3,14.3,20.860629656685227
 7,transfer,Naseem,Olaya,milk,9,14.3,2.581888970055677
-7,transfer,Naseem,Olaya,lettuce,7,14.3,2.00813586559886
-7,transfer,Naseem,Olaya,tomatoes,7,14.3,2.00813586559886
+7,transfer,Naseem,Olaya,lettuce,1,14.3,0.2868765522284086
+7,transfer,Naseem,Olaya,tomatoes,5,14.3,1.4343827611420428
 7,transfer,Naseem,Yasmin,milk,1,21.3,0.42608490063572235
-7,transfer,Shifa,Olaya,chicken,5,15.8,21.57710819754518
+7,transfer,Shifa,Olaya,chicken,8,15.8,22.523373116072285
 7,transfer,Shifa,Olaya,milk,21,15.8,6.62385442968975
-7,transfer,Shifa,Olaya,lettuce,9,15.8,2.8387947555813215
+7,transfer,Shifa,Olaya,lettuce,15,15.8,4.731324592635536
 7,transfer,Shifa,Olaya,laban,13,15.8,4.100481313617464
 7,transfer,Shifa,Olaya,tomatoes,2,15.8,0.6308432790180715
 8,transfer,Shifa,Olaya,bread,19,15.8,25.993011150671677
 8,transfer,Shifa,Olaya,laban,16,15.8,5.046746232144572
-8,transfer,Shifa,Olaya,tomatoes,14,15.8,4.4159029531265
+8,transfer,Shifa,Olaya,tomatoes,16,15.8,5.046746232144572
 8,transfer,Shifa,Olaya,yogurt,18,15.8,5.677589511162643
-8,discount,Rawdah,Rawdah,bread,5,0.0,0.0
-8,discount,Naseem,Naseem,bread,21,0.0,0.0
-8,discount,Naseem,Naseem,milk,2,0.0,0.0
-8,discount,Shifa,Shifa,bread,18,0.0,0.0
-8,discount,Shifa,Shifa,milk,3,0.0,0.0
-8,discount,Shifa,Shifa,lettuce,3,0.0,0.0
+8,donation,Rawdah,Food Bank North,bread,5,12.0,0.0
+8,donation,Naseem,Food Bank North,bread,21,17.1,0.0
+8,donation,Naseem,Food Bank North,milk,2,17.1,0.0
+8,donation,Shifa,Food Bank North,bread,18,26.1,0.0
+8,donation,Shifa,Food Bank North,milk,3,26.1,0.0
+8,donation,Shifa,Food Bank North,lettuce,3,26.1,0.0
 9,transfer,Naseem,Olaya,chicken,4,14.3,21.147506208913633
 9,transfer,Naseem,Olaya,laban,3,14.3,0.8606296566852256
 9,transfer,Naseem,Olaya,tomatoes,6,14.3,1.7212593133704512
@@ -71,58 +73,51 @@ day,type,src,dst,product,qty,km,cost
 9,transfer,Shifa,Olaya,milk,15,15.8,4.731324592635536
 9,transfer,Shifa,Olaya,lettuce,13,15.8,4.100481313617464
 9,transfer,Shifa,Olaya,laban,2,15.8,0.6308432790180715
-9,transfer,Shifa,Olaya,tomatoes,9,15.8,2.8387947555813215
+9,transfer,Shifa,Olaya,tomatoes,7,15.8,2.20795147656325
 10,transfer,Shifa,Olaya,bread,20,15.8,26.308432790180714
 10,transfer,Shifa,Olaya,laban,12,15.8,3.7850596741084286
 10,transfer,Shifa,Olaya,yogurt,16,15.8,5.046746232144572
-10,discount,Rawdah,Rawdah,bread,7,0.0,0.0
-10,discount,Naseem,Naseem,bread,16,0.0,0.0
-10,discount,Naseem,Naseem,milk,6,0.0,0.0
-10,discount,Shifa,Shifa,bread,3,0.0,0.0
-10,discount,Shifa,Shifa,milk,2,0.0,0.0
-10,discount,Shifa,Shifa,lettuce,2,0.0,0.0
+10,donation,Rawdah,Food Bank North,bread,7,12.0,0.0
+10,donation,Naseem,Food Bank North,bread,16,17.1,0.0
+10,donation,Naseem,Food Bank North,milk,6,17.1,0.0
+10,donation,Shifa,Food Bank North,bread,3,26.1,0.0
+10,donation,Shifa,Food Bank North,milk,2,26.1,0.0
+10,donation,Shifa,Food Bank North,lettuce,2,26.1,0.0
 11,transfer,Rawdah,Olaya,chicken,2,10.2,20.409148608438187
 11,transfer,Rawdah,Olaya,milk,4,10.2,0.8182972168763766
 11,transfer,Rawdah,Olaya,laban,12,10.2,2.4548916506291296
 11,transfer,Rawdah,Olaya,yogurt,12,10.2,2.4548916506291296
+11,transfer,Rawdah,Malqa,milk,12,17.9,4.30348104922073
+11,transfer,Rawdah,Malqa,laban,12,17.9,4.30348104922073
 11,transfer,Rawdah,Malqa,yogurt,2,17.9,0.7172468415367884
-11,transfer,Rawdah,Yasmin,laban,2,16.5,0.66016421055088
+11,transfer,Rawdah,Yasmin,milk,6,16.5,1.98049263165264
+11,transfer,Rawdah,Yasmin,laban,6,16.5,1.98049263165264
 11,transfer,Naseem,Olaya,milk,18,14.3,25.163777940111352
 11,transfer,Naseem,Olaya,lettuce,9,14.3,2.581888970055677
 11,transfer,Naseem,Olaya,laban,18,14.3,5.163777940111354
 11,transfer,Naseem,Olaya,tomatoes,24,14.3,6.885037253481805
 11,transfer,Naseem,Olaya,yogurt,13,14.3,3.7293951789693116
-11,transfer,Shifa,Malqa,chicken,6,30.6,23.67504457309878
-11,transfer,Shifa,Malqa,milk,12,30.6,7.350089146197561
-11,transfer,Shifa,Malqa,lettuce,8,30.6,4.900059430798374
-11,transfer,Shifa,Malqa,laban,12,30.6,7.350089146197561
-11,transfer,Shifa,Malqa,tomatoes,10,30.6,6.125074288497967
-11,transfer,Shifa,Malqa,yogurt,6,30.6,3.6750445730987806
-11,transfer,Shifa,Yasmin,chicken,3,31.9,1.9156601749539273
-11,transfer,Shifa,Yasmin,milk,6,31.9,3.8313203499078545
-11,transfer,Shifa,Yasmin,lettuce,3,31.9,1.9156601749539273
-11,transfer,Shifa,Yasmin,laban,4,31.9,2.554213566605236
-11,transfer,Shifa,Yasmin,tomatoes,5,31.9,3.192766958256545
-11,discount,Shifa,Shifa,chicken,4,0.0,0.0
-11,donation,Rawdah,Food Bank South,milk,48,15.7,0.0
-11,donation,Rawdah,Food Bank North,laban,20,12.0,0.0
-11,donation,Naseem,Food Bank South,laban,5,16.1,0.0
+11,discount,Shifa,Shifa,chicken,13,0.0,0.0
+11,donation,Rawdah,Food Bank South,milk,30,15.7,0.0
+11,donation,Rawdah,Food Bank North,laban,4,12.0,0.0
+11,donation,Naseem,Food Bank North,laban,5,17.1,0.0
 12,transfer,Naseem,Olaya,bread,22,14.3,26.31128414902499
 12,transfer,Naseem,Olaya,chicken,4,14.3,1.1475062089136343
 12,discount,Naseem,Naseem,milk,2,0.0,0.0
-12,discount,Shifa,Shifa,bread,18,0.0,0.0
-12,discount,Shifa,Shifa,milk,7,0.0,0.0
-12,discount,Shifa,Shifa,lettuce,3,0.0,0.0
+12,discount,Shifa,Shifa,milk,25,0.0,0.0
+12,discount,Shifa,Shifa,lettuce,14,0.0,0.0
+12,discount,Shifa,Shifa,tomatoes,4,0.0,0.0
+12,donation,Shifa,Food Bank North,bread,18,26.1,0.0
 13,transfer,Rawdah,Olaya,chicken,1,10.2,20.204574304219094
 13,transfer,Rawdah,Yasmin,chicken,2,16.5,0.66016421055088
 13,transfer,Naseem,Olaya,milk,15,14.3,24.30314828342613
 13,transfer,Naseem,Olaya,lettuce,4,14.3,1.1475062089136343
-13,transfer,Naseem,Olaya,yogurt,3,14.3,0.8606296566852256
+13,transfer,Naseem,Olaya,yogurt,1,14.3,0.2868765522284086
 13,transfer,Naseem,Malqa,milk,3,23.0,1.3795834633117172
 13,transfer,Naseem,Malqa,lettuce,2,23.0,0.9197223088744783
 13,transfer,Naseem,Malqa,laban,12,23.0,5.518333853246869
 13,transfer,Naseem,Malqa,tomatoes,6,23.0,2.7591669266234344
-13,transfer,Naseem,Malqa,yogurt,8,23.0,3.678889235497913
+13,transfer,Naseem,Malqa,yogurt,10,23.0,4.598611544372392
 13,transfer,Naseem,Yasmin,lettuce,4,21.3,1.7043396025428894
 13,transfer,Naseem,Yasmin,tomatoes,5,21.3,2.1304245031786118
 13,transfer,Naseem,Yasmin,yogurt,5,21.3,2.1304245031786118
@@ -131,15 +126,17 @@ day,type,src,dst,product,qty,km,cost
 13,transfer,Shifa,Olaya,lettuce,15,15.8,4.731324592635536
 13,transfer,Shifa,Olaya,laban,27,15.8,8.516384266743964
 13,transfer,Shifa,Olaya,tomatoes,25,15.8,7.885540987725894
-13,transfer,Shifa,Olaya,yogurt,22,15.8,6.939276069198786
+13,transfer,Shifa,Olaya,yogurt,24,15.8,7.570119348216857
 13,transfer,Shifa,Malqa,tomatoes,4,30.6,2.450029715399187
-14,discount,Rawdah,Rawdah,bread,8,0.0,0.0
-14,discount,Naseem,Naseem,bread,16,0.0,0.0
+13,donation,Shifa,Food Bank North,laban,16,26.1,0.0
+14,transfer,Shifa,Olaya,bread,22,15.8,26.939276069198787
 14,discount,Naseem,Naseem,milk,5,0.0,0.0
 14,discount,Naseem,Naseem,lettuce,3,0.0,0.0
-14,discount,Shifa,Shifa,bread,31,0.0,0.0
 14,discount,Shifa,Shifa,milk,5,0.0,0.0
 14,discount,Shifa,Shifa,lettuce,2,0.0,0.0
+14,donation,Rawdah,Food Bank North,bread,8,12.0,0.0
+14,donation,Naseem,Food Bank North,bread,16,17.1,0.0
+14,donation,Shifa,Food Bank North,bread,9,26.1,0.0
 15,transfer,Naseem,Olaya,milk,18,14.3,25.163777940111352
 15,transfer,Naseem,Olaya,lettuce,8,14.3,2.2950124178272686
 15,transfer,Naseem,Olaya,laban,15,14.3,4.303148283426128
@@ -166,6 +163,7 @@ day,type,src,dst,product,qty,km,cost
 16,discount,Naseem,Naseem,bread,20,0.0,0.0
 16,discount,Shifa,Shifa,bread,31,0.0,0.0
 16,discount,Shifa,Shifa,milk,1,0.0,0.0
+16,discount,Shifa,Shifa,tomatoes,4,0.0,0.0
 17,transfer,Rawdah,Malqa,lettuce,4,17.9,21.434493683073576
 17,transfer,Naseem,Olaya,milk,10,14.3,22.868765522284086
 17,transfer,Naseem,Olaya,lettuce,6,14.3,1.7212593133704512
@@ -187,13 +185,13 @@ day,type,src,dst,product,qty,km,cost
 17,donation,Shifa,Food Bank South,laban,6,6.9,0.0
 18,transfer,Shifa,Olaya,bread,6,15.8,21.892529837054216
 18,transfer,Shifa,Olaya,chicken,7,15.8,2.20795147656325
-18,discount,Rawdah,Rawdah,bread,8,0.0,0.0
 18,discount,Rawdah,Rawdah,lettuce,5,0.0,0.0
-18,discount,Naseem,Naseem,bread,26,0.0,0.0
 18,discount,Naseem,Naseem,milk,7,0.0,0.0
 18,discount,Naseem,Naseem,lettuce,4,0.0,0.0
-18,discount,Shifa,Shifa,bread,25,0.0,0.0
-18,discount,Shifa,Shifa,tomatoes,5,0.0,0.0
+18,discount,Shifa,Shifa,tomatoes,9,0.0,0.0
+18,donation,Rawdah,Food Bank North,bread,8,12.0,0.0
+18,donation,Naseem,Food Bank North,bread,26,17.1,0.0
+18,donation,Shifa,Food Bank North,bread,25,26.1,0.0
 19,transfer,Naseem,Olaya,milk,5,14.3,21.434382761142043
 19,transfer,Naseem,Olaya,laban,7,14.3,2.00813586559886
 19,transfer,Naseem,Olaya,tomatoes,10,14.3,2.8687655222840855
@@ -213,15 +211,16 @@ day,type,src,dst,product,qty,km,cost
 19,transfer,Shifa,Olaya,yogurt,24,15.8,7.570119348216857
 19,transfer,Shifa,Malqa,lettuce,4,30.6,2.450029715399187
 19,donation,Naseem,Food Bank South,laban,1,16.1,0.0
+19,donation,Shifa,Food Bank South,yogurt,4,6.9,0.0
 20,transfer,Naseem,Olaya,bread,8,14.3,22.29501241782727
 20,transfer,Naseem,Olaya,chicken,3,14.3,0.8606296566852256
-20,discount,Rawdah,Rawdah,bread,13,0.0,0.0
 20,discount,Rawdah,Rawdah,lettuce,1,0.0,0.0
-20,discount,Naseem,Naseem,bread,4,0.0,0.0
-20,discount,Shifa,Shifa,bread,33,0.0,0.0
 20,discount,Shifa,Shifa,milk,7,0.0,0.0
 20,discount,Shifa,Shifa,lettuce,1,0.0,0.0
 20,discount,Shifa,Shifa,tomatoes,17,0.0,0.0
+20,donation,Rawdah,Food Bank North,bread,13,12.0,0.0
+20,donation,Naseem,Food Bank North,bread,4,17.1,0.0
+20,donation,Shifa,Food Bank North,bread,33,26.1,0.0
 21,transfer,Naseem,Olaya,chicken,3,14.3,20.860629656685227
 21,transfer,Naseem,Olaya,milk,18,14.3,5.163777940111354
 21,transfer,Naseem,Olaya,lettuce,12,14.3,3.4425186267409025
@@ -239,12 +238,13 @@ day,type,src,dst,product,qty,km,cost
 21,transfer,Shifa,Olaya,yogurt,13,15.8,4.100481313617464
 21,discount,Shifa,Shifa,chicken,4,0.0,0.0
 21,donation,Shifa,Food Bank North,laban,4,26.1,0.0
-22,discount,Rawdah,Rawdah,bread,5,0.0,0.0
-22,discount,Naseem,Naseem,bread,17,0.0,0.0
+22,transfer,Shifa,Olaya,bread,22,15.8,26.939276069198787
 22,discount,Naseem,Naseem,milk,7,0.0,0.0
-22,discount,Shifa,Shifa,bread,30,0.0,0.0
 22,discount,Shifa,Shifa,milk,22,0.0,0.0
 22,discount,Shifa,Shifa,lettuce,10,0.0,0.0
+22,donation,Rawdah,Food Bank North,bread,5,12.0,0.0
+22,donation,Naseem,Food Bank North,bread,17,17.1,0.0
+22,donation,Shifa,Food Bank North,bread,8,26.1,0.0
 23,transfer,Naseem,Olaya,chicken,4,14.3,21.147506208913633
 23,transfer,Naseem,Olaya,milk,12,14.3,3.4425186267409025
 23,transfer,Naseem,Olaya,lettuce,10,14.3,2.8687655222840855
@@ -261,13 +261,14 @@ day,type,src,dst,product,qty,km,cost
 23,transfer,Shifa,Olaya,laban,20,15.8,6.308432790180714
 23,transfer,Shifa,Olaya,yogurt,10,15.8,3.154216395090357
 23,discount,Shifa,Shifa,chicken,4,0.0,0.0
-24,discount,Rawdah,Rawdah,bread,19,0.0,0.0
+24,transfer,Rawdah,Olaya,bread,19,10.2,23.886911780162787
+24,transfer,Naseem,Olaya,bread,7,14.3,22.00813586559886
 24,discount,Rawdah,Rawdah,milk,2,0.0,0.0
-24,discount,Naseem,Naseem,bread,10,0.0,0.0
-24,discount,Shifa,Shifa,bread,33,0.0,0.0
 24,discount,Shifa,Shifa,milk,8,0.0,0.0
 24,discount,Shifa,Shifa,lettuce,19,0.0,0.0
 24,discount,Shifa,Shifa,tomatoes,17,0.0,0.0
+24,donation,Naseem,Food Bank North,bread,3,17.1,0.0
+24,donation,Shifa,Food Bank North,bread,33,26.1,0.0
 25,transfer,Naseem,Olaya,chicken,8,14.3,22.29501241782727
 25,transfer,Naseem,Olaya,milk,18,14.3,5.163777940111354
 25,transfer,Naseem,Olaya,lettuce,9,14.3,2.581888970055677
@@ -281,16 +282,16 @@ day,type,src,dst,product,qty,km,cost
 25,transfer,Shifa,Olaya,tomatoes,7,15.8,2.20795147656325
 25,transfer,Shifa,Olaya,yogurt,3,15.8,0.9462649185271071
 25,donation,Shifa,Food Bank North,yogurt,13,26.1,0.0
-26,discount,Yasmin,Yasmin,bread,1,0.0,0.0
-26,discount,Rawdah,Rawdah,bread,3,0.0,0.0
+26,transfer,Naseem,Olaya,bread,21,14.3,26.02440759679658
 26,discount,Rawdah,Rawdah,milk,8,0.0,0.0
-26,discount,Naseem,Naseem,bread,21,0.0,0.0
 26,discount,Naseem,Naseem,milk,2,0.0,0.0
 26,discount,Naseem,Naseem,lettuce,3,0.0,0.0
-26,discount,Shifa,Shifa,bread,30,0.0,0.0
 26,discount,Shifa,Shifa,milk,23,0.0,0.0
 26,discount,Shifa,Shifa,lettuce,5,0.0,0.0
 26,discount,Shifa,Shifa,tomatoes,16,0.0,0.0
+26,donation,Yasmin,Food Bank South,bread,1,27.9,0.0
+26,donation,Rawdah,Food Bank North,bread,3,12.0,0.0
+26,donation,Shifa,Food Bank South,bread,30,6.9,0.0
 27,transfer,Naseem,Olaya,milk,2,14.3,20.573753104456816
 27,transfer,Naseem,Olaya,lettuce,2,14.3,0.5737531044568172
 27,transfer,Naseem,Olaya,laban,2,14.3,0.5737531044568172
@@ -301,10 +302,10 @@ day,type,src,dst,product,qty,km,cost
 27,transfer,Naseem,Malqa,yogurt,5,23.0,2.299305772186196
 27,transfer,Naseem,Yasmin,laban,6,21.3,2.556509403814334
 27,transfer,Naseem,Yasmin,yogurt,5,21.3,2.1304245031786118
-27,discount,Rawdah,Rawdah,laban,2,0.0,0.0
 27,discount,Naseem,Naseem,chicken,7,0.0,0.0
 27,discount,Shifa,Shifa,chicken,13,0.0,0.0
-27,discount,Shifa,Shifa,yogurt,17,0.0,0.0
+27,donation,Rawdah,Food Bank North,laban,2,12.0,0.0
+27,donation,Shifa,Food Bank North,yogurt,17,26.1,0.0
 28,discount,Rawdah,Rawdah,bread,13,0.0,0.0
 28,discount,Rawdah,Rawdah,milk,8,0.0,0.0
 28,discount,Naseem,Naseem,bread,33,0.0,0.0

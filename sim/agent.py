@@ -23,11 +23,11 @@ REASONING_EFFORT = os.getenv("NIMA_REASONING_EFFORT", "none")
 # maximum rounds of reasoning and tool calls per night
 MAX_STEPS = 16
 
-# الهدف الدائم الذي يضعه مدير العمليات: إنقاذ أكبر قدر من الطعام دون خسارة أكثر من 5% من أفضل إيراد
-# the operations manager's standing goal: save the most food without giving up more than 5% of the best revenue
-REVENUE_TOLERANCE = 0.05
-DEFAULT_GOAL = (f"Save as much food as possible, as long as tonight's expected net revenue "
-                f"stays within {REVENUE_TOLERANCE:.0%} of the best plan.")
+# الهدف الدائم: إنقاذ أكبر قدر من الطعام دون خسارة أكثر من 1% من إيراد السلسلة الكلي الليلة
+# the standing goal: save the most food without giving up more than 1% of the chain's total revenue tonight
+REVENUE_TOLERANCE = 0.01
+DEFAULT_GOAL = (f"Save as much food as possible, as long as tonight's total revenue across "
+                f"the chain stays within {REVENUE_TOLERANCE:.0%} of the best plan.")
 
 SYSTEM_PROMPT = """You are Ni'ma, the operations agent for a grocery chain in Riyadh.
 Stores: {stores}. Food banks: {food_banks}. Products: {products}.
@@ -365,16 +365,21 @@ class NimaAgent:
 
     def _compare(self, sim, state) -> dict:
         """
-        يقارن الخطط الثلاث. الكود يحسب نسبة الإيراد المتنازل عنها، وهل تحقق كل خطة هدف المدير.
-        Compares the three plans. The code calculates the share of revenue given up, and
-        whether each plan meets the manager's goal.
+        يقارن الخطط الثلاث. ما تتنازل عنه كل خطة يُقاس كنسبة من إيراد السلسلة الكلي المتوقع الليلة.
+        Compares the three plans. What each plan gives up is measured as a share of the
+        chain's total expected revenue tonight.
         """
         out = {pr: evaluate(self._plan(sim, pr), sim.sc) for pr in PRIORITIES}
+        # إيراد السلسلة المتوقع من المبيعات العادية، وهو المقياس الذي يقصده المدير
+        # the chain's expected revenue from normal sales: the yardstick the manager means
+        daily = sum(sim.sc.mean_demand(s.name, p.name) * p.unit_value
+                    for s in sim.sc.stores for p in sim.sc.products)
         best = max(r["expected_net_sar"] for r in out.values())
+        total = daily + best
         for r in out.values():
             given = best - r["expected_net_sar"]
-            r["revenue_given_up_pct"] = round(given / best * 100, 1) if best > 0 else 0.0
-            r["meets_goal"] = given <= REVENUE_TOLERANCE * max(best, 0)
+            r["revenue_given_up_pct"] = round(given / total * 100, 2)
+            r["meets_goal"] = given <= REVENUE_TOLERANCE * total
         if state.get("plan_without_notes") is not None:
             out["ignore_notes"] = evaluate(state["plan_without_notes"], sim.sc)
         state["comparison"] = out

@@ -1,0 +1,31 @@
+day,priority,reason,notes
+0,balanced,"Balanced and waste each save 63 units and give up 0.6% of the best revenue, within the 1% goal; balanced is among the plans saving the most food.",False
+1,waste,"Waste saves 1 unit while net revenue is SAR 8 with 0.0% revenue given up, meeting the goal; it ties the other plans on savings.",False
+2,waste,"Waste saves 88 expected units, the most among plans meeting the goal, while giving up 0.74% of the best revenue (net SAR 161 versus SAR 204), within the 1% limit.",False
+3,waste,Waste saves 16 units while meeting the goal at 0.0% revenue given up; all three plans tie at 16 units saved and SAR 207 expected net revenue.,False
+4,balanced,"Balanced saves 87 units while giving up 0.73% of the best revenue, within the 1% goal; waste saves 90 units but gives up 1.05%, exceeding the limit.",False
+5,waste,"All three plans meet the goal and save the same 43 units; waste is therefore tied for the most food saved, with 0.0% revenue given up and expected net revenue of SAR 448.",False
+6,waste,"Waste saves the most food at 117 expected units while giving up only 0.81% of the best revenue, within the 1% goal.",False
+7,value,"All three plans save 78 units, net SAR 471, and give up 0.0% of best revenue, so value ties for the most food saved while meeting the goal.",False
+8,waste,"Waste saves the most food at 121 units while giving up only 0.94% of the best revenue, within the 1% goal.",False
+9,value,"All three plans save 69 units and each gives up 0.0% of the best revenue (net SAR 410), so value ties for the most food saved while meeting the 1% goal.",False
+10,waste,"Waste saves the most food at 84 expected units while giving up 0.79% of the best revenue, within the 1% goal.",False
+11,waste,"With all closed legs blocked, waste saves the most food (197 units) among plans meeting the goal and gives up 0.17% of best revenue; balanced saves 195 and value 161.",True
+12,balanced,"Balanced saves 71 units while giving up only 0.26% of the best plan’s revenue, meeting the 1% goal; waste saves 89 units but gives up 1.99%, so it does not qualify.",False
+13,waste,"Waste saves the most food at 210 units and gives up only 0.41% of best revenue, within the 1% goal.",False
+14,balanced,"Balanced saves 64 units while meeting the 1% revenue goal with net revenue of SAR 51 and 0.51% given up; waste saves 70 units but gives up 1.11%, so it does not qualify.",False
+15,waste,"After excluding the closed Shifa-to-Olaya route, waste saves 159 units (more than value/balanced at 155) and gives up only 0.27% of best revenue, meeting the 1% goal.",True
+16,value,"Value saves 59 units and gives up 0.0% of the best revenue, while balanced and waste give up 1.06% and 1.36%, exceeding the 1% limit.",False
+17,waste,"Waste saves the most food at 158 units and meets the goal, giving up only 0.24% of the best revenue (below the 1% limit).",False
+18,balanced,"Balanced saves 87 units and gives up 0.85% of the best plan's revenue, meeting the 1% goal; waste saves 97 units but gives up 1.74% and does not qualify.",False
+19,waste,"Waste saves the most food at 152 units and meets the goal, giving up just 0.1% of best revenue (net SAR 549 versus SAR 555).",False
+20,balanced,"Balanced saves 77 units while giving up just 0.73% of the best revenue and meets the 1% goal; value saves 57, while waste saves 87 but gives up 1.73% and misses the goal.",True
+21,waste,"Waste saves the most food at 145 units and meets the 1% revenue goal, giving up only 0.11% versus the best plan.",False
+22,balanced,"Balanced saves 75 units while giving up 0.47% of the best revenue, within the 1% goal; waste saves 91 units but gives up 2.05%.",False
+23,value,"All three plans meet the goal and save the same 135 units, while each has expected net revenue of SAR 629 and gives up 0.0% of the best revenue; selecting value breaks the tie.",False
+24,balanced,"Balanced saves 90 units and gives up 0.8% of the best plan’s revenue, meeting the 1% goal; waste saves 108 but gives up 2.29% and fails.",True
+25,waste,"Waste saves the most food (140 units) while meeting the goal: its expected net revenue is SAR 681, only 0.25% below the best plan's SAR 697.",False
+26,balanced,"Balanced saves 89 units while giving up 0.52% of the best plan's 176 SAR net revenue, so it meets the 1% goal and saves more food than value.",False
+27,waste,"After blocking the closed Shifa–Olaya leg, waste saves 79 units for net SAR 397 and gives up 0.4% of best revenue, within the 1% goal; it saves more than the other qualifying plans.",True
+28,value,"Value saves 82 units and nets SAR 197, while balanced saves 112 units but gives up 1.09% of best revenue and waste gives up 3.41%; only value meets the 1% revenue goal.",False
+29,balanced,"Balanced saves 211 units while giving up 0.11% of the best revenue, within the 1% goal; waste saves 228 units but gives up 1.09%, so it misses the goal.",False

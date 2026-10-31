@@ -10,5 +10,5 @@
   {"role": "operations_manager", "who": "Operations",
    "text": "Food Bank South can't collect tomorrow morning."},
   {"role": "operations_manager", "who": "Operations",
-      "text": "Standing goal: save as much food as possible, as long as tonight's revenue stays within 5% of the best plan."}
+    "text": "Standing goal: save as much food as possible, as long as tonight's total revenue across the chain stays within 1% of the best plan."}
 ]

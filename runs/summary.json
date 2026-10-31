@@ -40,13 +40,13 @@
     "net_revenue": 150903.36971219958
   },
   "agent": {
-    "wasted": 704,
-    "stockout": 2682,
-    "donated": 107,
-    "waste_value": 3347.0,
-    "lost_sales_value": 14191.0,
-    "revenue": 153455.2,
-    "transport": 1508.49145175366,
-    "net_revenue": 151946.70854824636
+    "wasted": 469,
+    "stockout": 2623,
+    "donated": 646,
+    "waste_value": 2884.0,
+    "lost_sales_value": 14288.0,
+    "revenue": 152973.9,
+    "transport": 1602.0406312448256,
+    "net_revenue": 151371.85936875516
   }
 }

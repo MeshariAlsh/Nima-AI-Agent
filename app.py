@@ -487,10 +487,10 @@ with tab_agent:
                 if res.get("comparison"):
                     st.dataframe(comparison_table(res["comparison"], res["priority"]),
                                  hide_index=True, width="stretch")
-                    st.caption("'Meets goal': revenue stays within 5% of the best plan. "
-                               "'If no one read the notes' ignores tonight's spoilage, road "
-                               "closures, truck limit and food bank availability, so its "
-                               "figures are not achievable.")
+                    st.caption("'Meets goal': tonight's total revenue across the chain stays "
+                               "within 1% of the best plan. 'If no one read the notes' ignores "
+                               "tonight's spoilage, road closures, truck limit and food bank "
+                               "availability, so its figures are not achievable.")
 
             st.markdown("#### Tonight's actions")
             acts = pd.DataFrame(res["actions"], columns=ACTION_COLS)
