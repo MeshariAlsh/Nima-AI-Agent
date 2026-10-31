@@ -141,3 +141,11 @@ def load_scenario(path: str = "data/scenario.json") -> Scenario:
         discount_pct=d["discount_pct"],
         discount_sell_prob=d["discount_sell_prob"],
     )
+
+def load_events(path: str = "data/events.json") -> list[dict]:
+    """
+    يقرأ ملاحظات المديرين وآثارها الفعلية على المحاكاة.
+    Reads manager notes and their real effects on the simulation.
+    """
+    p = Path(path)
+    return json.loads(p.read_text()) if p.exists() else []

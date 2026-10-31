@@ -9,7 +9,7 @@ ACTION_COLS = ["day", "type", "src", "dst", "product", "qty", "km", "cost"]
 
 
 class Simulation:
-    def __init__(self, scenario: Scenario, seed: int = 0):
+    def __init__(self, scenario: Scenario, seed: int = 0, events: list | None = None):
         self.sc = scenario
         # مولّدان عشوائيان منفصلان: الأول لطلب العملاء والثاني لمبيعات التخفيض،
         # حتى يواجه كل نهج العملاء أنفسهم تمامًا
@@ -21,6 +21,9 @@ class Simulation:
         # الوحدات المخفّضة الليلة لتُعرض للبيع غدًا
         # units discounted tonight, on sale tomorrow
         self.clearance: list[Batch] = []
+        # الأحداث: ملاحظات يقرؤها الوكيل، وآثار حقيقية تطبّقها المحاكاة
+        # events: notes the agent can read, and real effects the simulation applies
+        self.events = events or []
         self.day = 0
 
     # ---------- دوال للقراءة فقط تستخدمها السياسات ----------
@@ -29,14 +32,13 @@ class Simulation:
         return sum(b.qty for b in self.batches
                    if b.store == store and b.product == product)
 
-    def expiring_by(self, store: str, product: str, day: int) -> int:
+    def notes_today(self) -> list[dict]:
         """
-        الوحدات في هذا المتجر التي تنتهي صلاحيتها في اليوم `day` أو قبله.
-        Units at this store that expire on or before `day`.
+        ملاحظات المديرين التي تصل هذا المساء. الأثر الفعلي يبقى مخفيًا عن السياسات.
+        Manager notes arriving this evening. The real effect stays hidden from policies.
         """
-        return sum(b.qty for b in self.batches
-                   if b.store == store and b.product == product
-                   and b.expiry_day <= day)
+        return [{"store": e["store"], "text": e["text"]}
+                for e in self.events if e["notice_day"] == self.day]
 
     def _batches(self, store: str, product: str) -> list[Batch]:
         """
@@ -63,15 +65,60 @@ class Simulation:
         self.batches = [b for b in self.batches if b.qty > 0]
         return taken
 
-    # ---------- المراحل الأربع لليوم ----------
-    # ---------- the four stages of a day ----------
+    # ---------- آثار الأحداث ----------
+    # ---------- event effects ----------
+    def _applies(self, e: dict, store: str) -> bool:
+        return e["store"] in ("ALL", store)
+
+    def _demand_multiplier(self, store: str, product: str) -> float:
+        """
+        معامل الطلب الحقيقي اليوم: مناسبات ترفعه، ومنافس يخفضه، والإغلاق يجعله صفرًا.
+        Today's real demand multiplier: events raise it, a competitor lowers it, closure zeroes it.
+        """
+        m = 1.0
+        for e in self.events:
+            f = e["effect"]
+            if not self._applies(e, store) or self.day not in f.get("days", []):
+                continue
+            if f["type"] == "demand" and (f["products"] == "all" or product in f["products"]):
+                m *= f["multiplier"]
+            elif f["type"] == "closed":
+                m = 0.0
+        return m
+
+    def _delivery_blocked(self, store: str, product: str) -> bool:
+        return any(e["effect"]["type"] == "no_delivery"
+                   and self.day in e["effect"]["days"]
+                   and product in e["effect"]["products"]
+                   and self._applies(e, store) for e in self.events)
+
+    def _spoil(self, rec):
+        """
+        تلف المخزون ليلًا (مثل عطل الثلاجة): ما بقي في المتجر يُشطب هدرًا.
+        Overnight spoilage (e.g. a fridge failure): whatever is still in the store is written off.
+        """
+        for e in self.events:
+            f = e["effect"]
+            if f["type"] != "spoil" or f["night"] != self.day:
+                continue
+            for b in self.batches + self.clearance:
+                if b.store == e["store"] and b.product in f["products"]:
+                    rec[(b.store, b.product)]["wasted"] += b.qty
+                    b.qty = 0
+        self.batches = [b for b in self.batches if b.qty > 0]
+        self.clearance = [c for c in self.clearance if c.qty > 0]
+
+    # ---------- مراحل اليوم ----------
+    # ---------- the stages of a day ----------
     def _deliver(self, rec):
         """
-        المستودع يرسل لكل متجر الكمية نفسها، وهي متوسط الطلب.
-        Warehouse sends every store the same amount: average demand.
+        المستودع يرسل لكل متجر الكمية نفسها، وهي متوسط الطلب، إلا إذا تأخر المورد.
+        Warehouse sends every store the same amount, average demand, unless a supplier is late.
         """
         for s in self.sc.stores:
             for p in self.sc.products:
+                if self._delivery_blocked(s.name, p.name):
+                    continue
                 qty = round(self.sc.base_demand[p.name] * self.sc.delivery_every)
                 self.batches.append(
                     Batch(s.name, p.name, qty, self.day + p.shelf_life - 1))
@@ -92,7 +139,9 @@ class Simulation:
 
         for s in self.sc.stores:
             for p in self.sc.products:
-                demand = int(self.rng.poisson(self.sc.mean_demand(s.name, p.name)))
+                mean = (self.sc.mean_demand(s.name, p.name)
+                        * self._demand_multiplier(s.name, p.name))
+                demand = int(self.rng.poisson(mean))
                 remaining = demand
                 for b in self._batches(s.name, p.name):
                     if remaining == 0:
@@ -202,9 +251,10 @@ class Simulation:
         plan = policy(self)
         if isinstance(plan, list):
             plan = Plan(transfers=plan)
-        # ليلًا
-        # overnight
+        # ليلًا: التنفيذ ثم أي تلف
+        # overnight: execution, then any spoilage
         actions = self._apply_plan(plan, rec)
+        self._spoil(rec)
 
         rows = [{"day": self.day, "store": s, "product": p, **r,
                  "stock_end": self.stock(s, p)}
@@ -213,12 +263,13 @@ class Simulation:
         return rows, actions, plan.explanation
 
 
-def simulate(scenario: Scenario, policy, days: int = 30, seed: int = 0):
+def simulate(scenario: Scenario, policy, days: int = 30, seed: int = 0,
+             events: list | None = None):
     """
-    تشغيل سياسة واحدة لعدد `days` من الأيام. البذرة نفسها تعني طلب العملاء نفسه.
-    Run one policy for `days` days. Same seed = same customer demand.
+    تشغيل سياسة واحدة لعدد `days` من الأيام. البذرة نفسها والأحداث نفسها لكل السياسات.
+    Run one policy for `days` days. Same seed and same events for every policy.
     """
-    sim = Simulation(scenario, seed)
+    sim = Simulation(scenario, seed, events)
     rows, actions, briefings = [], [], []
     for _ in range(days):
         day = sim.day

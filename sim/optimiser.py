@@ -22,7 +22,8 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
                  urgent: dict | None = None,
                  allow_transfer: bool = True,
                  allow_discount: bool = True,
-                 allow_donation: bool = True) -> Plan:
+                 allow_donation: bool = True,
+                 no_discount: set | None = None) -> Plan:
     """
     يختار لكل فائض أفضل توزيع بين النقل والتخفيض والتبرع، وفق أولويات صاحب القرار.
     For every surplus, chooses the best split between transfer, discount and donation,
@@ -57,8 +58,14 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
           for (i, j) in routes for p in products
           if surplus.get((i, p), 0) > 0 and need.get((j, p), 0) > 0}
          if allow_transfer else {})
+    
+    # التخفيض غير ممكن للمخزون الذي سيتلف الليلة
+    # discounting isn't possible for stock that will spoil tonight
+    no_discount = no_discount or set()
     c = ({(i, p): pulp.LpVariable(f"c_{i}_{p}", 0, None, pulp.LpContinuous)
-          for (i, p) in has_urgent} if allow_discount else {})
+          for (i, p) in has_urgent if (i, p) not in no_discount}
+         if allow_discount else {})
+    
     g = ({(i, r.name, p): pulp.LpVariable(f"g_{i}_{k}_{p}", 0, None, pulp.LpContinuous)
           for (i, p) in has_urgent for k, r in enumerate(scenario.recipients)}
          if allow_donation else {})

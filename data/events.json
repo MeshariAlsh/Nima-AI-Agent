@@ -1,0 +1,40 @@
+[
+  {
+    "notice_day": 5,
+    "store": "Yasmin",
+    "text": "فيه زواج كبير في القاعة اللي جنب فرع الياسمين يوم الخميس والجمعة، توقعوا طلب عالي على الخبز واللبن والدجاج",
+    "effect": {"type": "demand", "products": ["bread", "laban", "chicken"],
+               "multiplier": 2.0, "days": [6, 7]}
+  },
+  {
+    "notice_day": 11,
+    "store": "Rawdah",
+    "text": "Refrigeration fault at Rawdah. Technician arrives tomorrow. Dairy left in the store tonight will spoil.",
+    "effect": {"type": "spoil", "products": ["milk", "laban", "yogurt"], "night": 11}
+  },
+  {
+    "notice_day": 15,
+    "store": "ALL",
+    "text": "المورد بلغنا إن شحنة الدجاج بكرة متأخرة، ما فيه توريد دجاج لكل الفروع",
+    "effect": {"type": "no_delivery", "products": ["chicken"], "days": [16]}
+  },
+  {
+    "notice_day": 20,
+    "store": "Malqa",
+    "text": "Malqa branch closed tomorrow for maintenance. No sales and no receiving.",
+    "effect": {"type": "closed", "days": [21]}
+  },
+  {
+    "notice_day": 24,
+    "store": "Naseem",
+    "text": "عندنا فعالية مدرسية قريبة من فرع النسيم بكرة، حوالي ٣٠٠ طالب، يحتاجون خبز ولبن",
+    "effect": {"type": "demand", "products": ["bread", "laban"],
+               "multiplier": 2.5, "days": [25]}
+  },
+  {
+    "notice_day": 27,
+    "store": "Olaya",
+    "text": "A new competitor opened near Olaya. Expect demand about 30% lower for the next two days.",
+    "effect": {"type": "demand", "products": "all", "multiplier": 0.7, "days": [28, 29]}
+  }
+]
