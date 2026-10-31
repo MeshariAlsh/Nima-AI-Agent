@@ -28,6 +28,7 @@
   "delivery_every": 2,
   "transport_cost_per_unit_km": 0.02,
   "trip_cost": 20.0,
+  "truck_capacity": 400,
   "discount_pct": 0.3,
   "discount_sell_prob": 0.6
 }

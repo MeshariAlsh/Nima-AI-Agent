@@ -1,0 +1,14 @@
+[
+  {"role": "store_manager", "who": "Rawdah",
+   "text": "عندنا عطل في ثلاجات فرع الروضة، الفني بيجي بكرة، الألبان بتخرب الليلة"},
+  {"role": "store_manager", "who": "Naseem",
+   "text": "يمكن يزيد الطلب عندنا هالأسبوع"},
+  {"role": "store_manager", "who": "Olaya",
+   "text": "The new supermarket next door opened today. We were noticeably quieter this afternoon."},
+  {"role": "operations_manager", "who": "Operations",
+   "text": "Only three refrigerated trucks are available tonight."},
+  {"role": "operations_manager", "who": "Operations",
+   "text": "Food Bank South can't collect tomorrow morning."},
+  {"role": "operations_manager", "who": "Operations",
+      "text": "Standing goal: save as much food as possible, as long as tonight's revenue stays within 5% of the best plan."}
+]

@@ -175,8 +175,9 @@ class Simulation:
         """
         actions = []
 
-        # النقل بين الفروع، مع تكلفة رحلة ثابتة لأول شحنة على كل مسار
-        # transfers between branches, with a fixed trip cost for the first load on each route
+        # النقل بين الفروع، مع تكلفة رحلة واحدة لكل شاحنة تغادر متجرًا، مهما كان عدد نقاط التسليم
+        # transfers between branches, with one trip cost per truck leaving a store,
+        # however many drops it makes
         trips = set()
         for t in plan.transfers:
             if t.src == t.dst or t.qty <= 0:
@@ -188,8 +189,8 @@ class Simulation:
             if moved:
                 km = distance_km(self.sc.store(t.src), self.sc.store(t.dst))
                 cost = moved * km * self.sc.transport_cost_per_unit_km
-                if (t.src, t.dst) not in trips:
-                    trips.add((t.src, t.dst))
+                if t.src not in trips:
+                    trips.add(t.src)
                     cost += self.sc.trip_cost
                 rec[(t.src, t.product)]["transfer_out"] += moved
                 rec[(t.dst, t.product)]["transfer_in"] += moved

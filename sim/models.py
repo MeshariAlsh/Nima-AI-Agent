@@ -98,6 +98,9 @@ class Scenario:
     # discount rate, and probability a discounted unit sells the next day
     discount_pct: float
     discount_sell_prob: float
+    # أقصى عدد من الوحدات تحمله الشاحنة الواحدة
+    # maximum units one truck can carry
+    truck_capacity: int = 400
 
     def mean_demand(self, store: str, product: str) -> float:
         return self.base_demand[product] * self.store_multiplier[store]
@@ -140,6 +143,7 @@ def load_scenario(path: str = "data/scenario.json") -> Scenario:
         trip_cost=d["trip_cost"],
         discount_pct=d["discount_pct"],
         discount_sell_prob=d["discount_sell_prob"],
+        truck_capacity=d.get("truck_capacity", 400),
     )
 
 def load_events(path: str = "data/events.json") -> list[dict]:

@@ -23,19 +23,30 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
                  allow_transfer: bool = True,
                  allow_discount: bool = True,
                  allow_donation: bool = True,
-                 no_discount: set | None = None) -> Plan:
+                 no_discount: set | None = None,
+                 max_trips: int | None = None,
+                 budget: float | None = None,
+                 blocked_routes: set | None = None,
+                 blocked_recipients: set | None = None) -> Plan:
     """
-    يختار لكل فائض أفضل توزيع بين النقل والتخفيض والتبرع، وفق أولويات صاحب القرار.
+    يختار لكل فائض أفضل توزيع بين النقل والتخفيض والتبرع، وفق أولويات صاحب القرار وقيود العمليات.
     For every surplus, chooses the best split between transfer, discount and donation,
-    according to the decision-maker's priorities.
+    following the decision-maker's priorities and the operations constraints.
     """
     w = PRIORITIES[priority]
+    no_discount = no_discount or set()
+    blocked_routes = blocked_routes or set()
+    blocked_recipients = blocked_recipients or set()
     stores = [s.name for s in scenario.stores]
     products = [p.name for p in scenario.products]
     value = {p.name: p.unit_value for p in scenario.products}
     q = scenario.discount_sell_prob
     keep = 1 - scenario.discount_pct
-    routes = [(i, j) for i in stores for j in stores if i != j]
+
+    # المسارات المسموحة فقط، بعد استبعاد الطرق المغلقة
+    # allowed routes only, after removing closed roads
+    routes = [(i, j) for i in stores for j in stores
+              if i != j and (i, j) not in blocked_routes]
 
     # تكلفة نقل الوحدة الواحدة على كل مسار بالريال
     # cost of moving one unit along each route, in SAR
@@ -51,6 +62,7 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
     if not has_surplus:
         return Plan()
     has_urgent = [(i, p) for (i, p) in has_surplus if urgent.get((i, p), 0) > 0]
+    recipients = [r for r in scenario.recipients if r.name not in blocked_recipients]
 
     # متغيرات القرار: النقل (x)، والتخفيض (c)، والتبرع (g)
     # decision variables: transfer (x), discount (c), donation (g)
@@ -58,24 +70,19 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
           for (i, j) in routes for p in products
           if surplus.get((i, p), 0) > 0 and need.get((j, p), 0) > 0}
          if allow_transfer else {})
-    
-    # التخفيض غير ممكن للمخزون الذي سيتلف الليلة
-    # discounting isn't possible for stock that will spoil tonight
-    no_discount = no_discount or set()
     c = ({(i, p): pulp.LpVariable(f"c_{i}_{p}", 0, None, pulp.LpContinuous)
           for (i, p) in has_urgent if (i, p) not in no_discount}
          if allow_discount else {})
-    
     g = ({(i, r.name, p): pulp.LpVariable(f"g_{i}_{k}_{p}", 0, None, pulp.LpContinuous)
-          for (i, p) in has_urgent for k, r in enumerate(scenario.recipients)}
+          for (i, p) in has_urgent for k, r in enumerate(recipients)}
          if allow_donation else {})
     if not (x or c or g):
         return Plan()
 
-    # متغير ثنائي لكل مسار: هل تخرج شاحنة عليه الليلة؟
-    # one binary variable per route: does a truck run on it tonight?
-    y = {r: pulp.LpVariable(f"y_{r[0]}_{r[1]}", 0, 1, pulp.LpBinary)
-         for r in {(i, j) for (i, j, _) in x}}
+     # متغير ثنائي لكل متجر مصدر: هل تخرج منه شاحنة الليلة؟ الشاحنة الواحدة قد تمر بعدة متاجر
+    # one binary per source store: does a truck leave it tonight? One truck can drop at several stores
+    y = {i: pulp.LpVariable(f"y_{i}", 0, 1, pulp.LpBinary)
+         for i in {i for (i, _, _) in x}}
 
     prob = pulp.LpProblem("nima_actions", pulp.LpMaximize)
 
@@ -121,18 +128,29 @@ def plan_actions(scenario: Scenario, surplus: dict, need: dict,
         if inc:
             prob += pulp.lpSum(inc) <= qty
 
-    # قيد: لا تتجاوز التبرعات السعة اليومية لكل جهة مستفيدة
-    # constraint: donations can't exceed each recipient's daily capacity
-    for r in scenario.recipients:
+    # قيد: لا تتجاوز التبرعات السعة اليومية لكل جهة مستفيدة متاحة
+    # constraint: donations can't exceed each available recipient's daily capacity
+    for r in recipients:
         parts = [v for (_, name, _), v in g.items() if name == r.name]
         if parts:
             prob += pulp.lpSum(parts) <= r.daily_capacity
 
-    # قيد: لا يُنقل شيء على مسار إلا إذا خرجت شاحنة عليه
-    # constraint: nothing moves on a route unless a truck runs on it
-    big_m = sum(surplus.values())
-    for r in y:
-        prob += pulp.lpSum(v for (i, j, _), v in x.items() if (i, j) == r) <= big_m * y[r]
+       # قيد: لا يُحمَّل شيء إلا إذا خرجت شاحنة، وبحد أقصى سعة الشاحنة
+    # constraint: nothing is loaded unless a truck leaves, and at most one truck's capacity
+    for i in y:
+        prob += (pulp.lpSum(v for (a, _, _), v in x.items() if a == i)
+                 <= scenario.truck_capacity * y[i])
+
+    # قيد العمليات: عدد الشاحنات المتاحة الليلة
+    # operations constraint: trucks available tonight
+    if max_trips is not None and y:
+        prob += pulp.lpSum(y.values()) <= max_trips
+
+    # قيد العمليات: ميزانية النقل الليلة
+    # operations constraint: tonight's transport budget
+    if budget is not None and x:
+        prob += (pulp.lpSum(unit_cost[(i, j)] * v for (i, j, _), v in x.items())
+                 + scenario.trip_cost * pulp.lpSum(y.values())) <= budget
 
     # حد زمني لكل مسألة، وقبول حل ضمن 1% من الأمثل
     # time limit per problem, and accept a solution within 1% of optimal

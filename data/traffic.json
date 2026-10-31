@@ -1,0 +1,8 @@
+[
+  {"road": "King Fahd Road", "type": "closure",
+   "detail": "Closed 22:00 to 06:00 for roadworks",
+   "routes": [["Shifa", "Malqa"], ["Shifa", "Yasmin"], ["Shifa", "Olaya"]]},
+  {"road": "Eastern Ring Road", "type": "delay", "delay_minutes": 35,
+   "detail": "Heavy congestion after an accident",
+   "routes": [["Naseem", "Malqa"], ["Naseem", "Yasmin"]]}
+]
